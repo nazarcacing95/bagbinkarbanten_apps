@@ -1,261 +1,432 @@
 <!DOCTYPE html>
 <html lang="id">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Dashboard SDM Polda Banten</title>
-    
-    <!-- External Dependencies (Combined) -->
+
+    <!-- External Dependencies -->
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
-    
+
     <!-- Fonts -->
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;800&display=swap" rel="stylesheet">
-    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-    
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap"
+        rel="stylesheet">
+
     <style>
-        /* DASHBOARD SHELL STYLES */
-        body { margin: 0; padding: 0; overflow: hidden; }
-        .sidebar-link { @apply block py-3 px-4 rounded transition-colors text-sm font-medium text-slate-300 hover:bg-slate-800 hover:text-white; cursor: pointer; }
-        .sidebar-link.active { @apply bg-slate-800 text-white border-l-4 border-blue-500; }
-        
-        .app-view { display: none; height: 100%; width: 100%; overflow-y: auto; }
-        .app-view.active { display: block; }
-
-        /* =========================================
-           APP 1: UKP STYLE ISOLATION
-           ========================================= */
-        #app-ukp {
-            font-family: 'Poppins', sans-serif; 
-            background: linear-gradient(135deg, #e9ecef 0%, #dee2e6 100%); 
-            /* Restore Tailwind Preflight resets for this section */
-        }
-        #app-ukp h1 { font-size: 24px; font-weight: 800; margin-bottom: 0.67em; }
-        #app-ukp p { margin-bottom: 1em; }
-        #app-ukp :root { --polri-blue: #002D5A; --polri-gold: #FFD700; --accent: #e63946; --bg: #f8f9fa; }
-
-        #app-ukp .app-card { 
-            width: 100%; 
-            max-width: 550px; 
-            background: #ffffff; 
-            border-radius: 24px; 
-            box-shadow: 0 15px 35px rgba(0,0,0,0.15); 
-            overflow: hidden; 
-            border: 1px solid rgba(0,0,0,0.05);
-            margin-bottom: 30px;
-            margin-left: auto; margin-right: auto; /* Center it */
+        /* --- DASHBOARD CORE STYLES --- */
+        body {
+            margin: 0;
+            padding: 0;
+            background-color: #0f172a;
+            /* Dark background for particles */
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            overflow: hidden;
+            /* Prevent body scroll, handle in main */
+            display: flex;
+            height: 100vh;
         }
 
-        #app-ukp .header { background: #002D5A; color: white; padding: 35px 20px; text-align: center; border-bottom: 5px solid #FFD700; }
-        #app-ukp .content { padding: 35px; }
-        #app-ukp .form-group { margin-bottom: 22px; }
-        
-        #app-ukp label { 
-            display: block; 
-            font-size: 11px; 
-            font-weight: 800; 
-            color: #002D5A; 
-            margin-bottom: 8px; 
-            text-transform: uppercase; 
-            letter-spacing: 1px; 
-        }
-
-        #app-ukp select, #app-ukp input { 
-            width: 100%; 
-            padding: 14px 16px; 
-            border: 2px solid #edeff2; 
-            border-radius: 12px; 
-            font-size: 14px; 
-            background: #fbfcfd; 
-            transition: 0.3s; 
-            box-sizing: border-box; 
-            outline: none; 
-            font-family: inherit; 
-            color: #000;
-        }
-
-        #app-ukp select:focus, #app-ukp input:focus { border-color: #002D5A; background: #fff; box-shadow: 0 0 0 4px rgba(0,45,90,0.05); }
-
-        #app-ukp #form-ipda { 
-            display: none; 
-            background: #fffcf0; 
-            padding: 20px; 
-            border-radius: 16px; 
-            border: 1px solid #f9eeb3; 
-            margin-bottom: 22px; 
-            animation: slideDown 0.3s ease; 
-        }
-
-        @keyframes slideDown { from { opacity: 0; transform: translateY(-10px); } to { opacity: 1; transform: translateY(0); } }
-
-        #app-ukp button { 
-            width: 100%; 
-            padding: 18px; 
-            background: #002D5A; 
-            color: white; 
-            border: none; 
-            border-radius: 14px; 
-            font-weight: 700; 
-            font-size: 16px; 
-            cursor: pointer; 
-            transition: 0.3s; 
-            text-transform: uppercase; 
-            letter-spacing: 1px; 
-            box-shadow: 0 4px 15px rgba(0,45,90,0.3); 
-        }
-
-        #app-ukp button:hover { background: #004080; transform: translateY(-2px); }
-
-        #app-ukp .result-area { 
-            margin-top: 35px; 
-            padding: 30px; 
-            border-radius: 20px; 
-            display: none; 
-            text-align: center; 
-            background: #f0f7ff; 
-            border: 2px dashed #b8daff; 
-            animation: fadeIn 0.5s ease; 
-        }
-
-        @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
-
-        #app-ukp .tmt-final { font-size: 32px; color: #e63946; font-weight: 800; margin: 10px 0; }
-        #app-ukp .detail-badge { display: inline-block; padding: 6px 16px; background: #e1efff; color: #0056b3; border-radius: 50px; font-size: 11px; font-weight: 600; margin-top: 10px; }
-
-        #app-ukp footer {
+        /* Particle Canvas */
+        #particle-canvas {
+            position: absolute;
+            top: 0;
+            left: 0;
             width: 100%;
-            max-width: 550px;
+            height: 100%;
+            z-index: 0;
+            pointer-events: none;
+        }
+
+        /* --- SIDEBAR --- */
+        .sidebar {
+            width: 280px;
+            background: linear-gradient(135deg, rgba(15, 23, 42, 0.95), rgba(30, 41, 59, 0.9));
+            backdrop-filter: blur(20px);
+            border-right: 1px solid rgba(245, 158, 11, 0.2);
+            /* Amber border */
+            display: flex;
+            flex-direction: column;
+            padding: 20px;
+            z-index: 50;
+            box-shadow: 10px 0 30px rgba(0, 0, 0, 0.5);
+        }
+
+        .brand {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            margin-bottom: 40px;
+            padding: 10px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+        }
+
+        .logo-box {
+            width: 45px;
+            height: 45px;
+            background: linear-gradient(135deg, #fbbf24, #d97706);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 0 15px rgba(251, 191, 36, 0.4);
+            animation: pulse-logo 3s infinite;
+        }
+
+        @keyframes pulse-logo {
+
+            0%,
+            100% {
+                transform: scale(1);
+                filter: drop-shadow(0 0 5px rgba(251, 191, 36, 0.5));
+            }
+
+            50% {
+                transform: scale(1.1);
+                filter: drop-shadow(0 0 15px rgba(251, 191, 36, 0.8));
+            }
+        }
+
+        .nav-link {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 14px 16px;
+            margin-bottom: 8px;
+            border-radius: 12px;
+            color: #94a3b8;
+            font-weight: 600;
+            font-size: 14px;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            border: 1px solid transparent;
+            cursor: pointer;
+        }
+
+        .nav-link:hover {
+            background: rgba(255, 255, 255, 0.05);
+            color: #fbbf24;
+            transform: translateX(5px);
+        }
+
+        .nav-link.active {
+            background: linear-gradient(90deg, rgba(251, 191, 36, 0.1), transparent);
+            border-left: 4px solid #fbbf24;
+            color: #fbbf24;
+            text-shadow: 0 0 10px rgba(251, 191, 36, 0.3);
+        }
+
+        .nav-link i {
+            width: 20px;
             text-align: center;
-            padding: 25px 0;
-            color: #4a5568;
-            border-top: 2px solid #cbd5e0;
+        }
+
+        /* --- MAIN CONTENT --- */
+        .main-content {
+            flex: 1;
+            position: relative;
+            z-index: 10;
+            overflow-y: auto;
+            padding: 40px;
+        }
+
+        /* --- APP ISOALTION STYLES --- */
+        .app-view {
+            display: none;
+            animation: fadeIn 0.4s ease-out;
+        }
+
+        .app-view.active {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* UNIFIED APP CARD STYLE */
+        .glass-card {
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 20px;
+            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.2);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            overflow: hidden;
             margin: 0 auto;
         }
 
-        #app-ukp .footer-main {
+        /* --- APP 1: UKP OVERRIDES --- */
+        #app-ukp {
+            font-family: 'Poppins', sans-serif;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        #app-ukp .app-card {
+            @apply glass-card;
+            width: 100%;
+        }
+
+        #app-ukp .header {
+            background: linear-gradient(135deg, #d97706 0%, #b45309 100%);
+            color: white;
+            padding: 30px;
+            text-align: center;
+            border-bottom: 4px solid #fbbf24;
+        }
+
+        #app-ukp button {
+            background: linear-gradient(to right, #f59e0b, #d97706);
+            color: white;
+            border: none;
+            padding: 15px;
+            width: 100%;
+            border-radius: 10px;
+            font-weight: bold;
+            box-shadow: 0 4px 15px rgba(245, 158, 11, 0.3);
+            transition: 0.3s;
+        }
+
+        #app-ukp button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(245, 158, 11, 0.4);
+        }
+
+        #app-ukp .content {
+            padding: 30px;
+        }
+
+        #app-ukp .form-group {
+            margin-bottom: 20px;
+        }
+
+        #app-ukp label {
+            color: #b45309;
             font-weight: 800;
-            color: #002D5A;
-            font-size: 14px;
-            letter-spacing: 0.5px;
-            margin-bottom: 4px;
-        }
-
-        #app-ukp .footer-sub {
             font-size: 12px;
-            font-weight: 600;
-            color: #718096;
-            margin-bottom: 12px;
+            margin-bottom: 8px;
+            display: block;
+            text-transform: uppercase;
         }
 
-        #app-ukp .copyright {
-            font-size: 11px;
-            color: #a0aec0;
-            font-weight: 400;
+        #app-ukp select,
+        #app-ukp input {
+            width: 100%;
+            padding: 12px;
+            border-radius: 8px;
+            border: 2px solid #fed7aa;
+            background: #fff7ed;
+            color: #431407;
+            outline: none;
+            transition: 0.3s;
         }
 
-        /* =========================================
-           APP 2: VALIDATOR STYLE ISOLATION
-           ========================================= */
+        #app-ukp select:focus,
+        #app-ukp input:focus {
+            border-color: #f59e0b;
+            background: #fff;
+        }
+
+        /* --- APP 2: VALIDATOR OVERRIDES --- */
         #app-validator {
-            font-family: 'Plus Jakarta Sans', sans-serif; 
-            background-color: #f1f5f9;
+            max-width: 1200px;
+            margin: 0 auto;
         }
-        #app-validator .stat-card { transition: transform 0.2s; }
-        #app-validator .stat-card:hover { transform: translateY(-5px); }
-        #app-validator .row-error { background-color: #fff1f2; border-left: 4px solid #e11d48; }
-        #app-validator .row-valid { border-left: 4px solid #10b981; }
-        #app-validator .sticky-table-head { position: sticky; top: 0; z-index: 10; background: #1e293b; color: white; }
 
-        /* =========================================
-           APP 3: INDIKATOR STYLE ISOLATION
-           ========================================= */
+        #app-validator .glass-card {
+            @apply glass-card;
+        }
+
+        #app-validator header {
+            background: linear-gradient(135deg, #0f172a 0%, #1e293b 100%) !important;
+            border-bottom: 4px solid #f59e0b !important;
+        }
+
+        #app-validator .icon-box {
+            background: #d97706 !important;
+        }
+
+        #app-validator .stat-card {
+            border-bottom: 4px solid #f59e0b !important;
+        }
+
+        #app-validator .btn-orange {
+            @apply bg-gradient-to-r from-amber-500 to-orange-600 text-white font-bold shadow-lg shadow-orange-500/30 hover:scale-105 transition-all;
+        }
+
+        /* --- APP 3: INDIKATOR OVERRIDES --- */
         #app-indikator {
-            font-family: 'Segoe UI', Arial, sans-serif; 
-            background: #e9ecef;
-            display: flex; 
-            justify-content: center; 
-            align-items: center; 
-            min-height: 100%; 
-            padding: 20px;
-        }
-        /* Restore Header Sizes */
-        #app-indikator h2 { 
-            font-size: 1.5em; 
-            font-weight: bold; 
-            color: #003366; 
-            text-align: center; 
-            margin-bottom: 25px; 
-            text-transform: uppercase; 
-            letter-spacing: 1px; 
+            max-width: 800px;
+            margin: 0 auto;
+            font-family: 'Segoe UI', sans-serif;
+            color: #ffffff !important;
+            /* Force white text globally for this app */
         }
 
-        #app-indikator .card { width: 100%; max-width: 850px; background: white; padding: 30px; border-radius: 15px; box-shadow: 0 10px 30px rgba(0,0,0,0.1); border-top: 10px solid #003366; }
-        
-        #app-indikator label { font-weight: bold; font-size: 13px; color: #555; display: block; margin-bottom: 8px; }
-        
-        #app-indikator textarea { 
-            width: 100%; 
-            padding: 12px; 
-            border: 1px solid #ccc; 
-            border-radius: 8px; 
-            box-sizing: border-box; 
-            font-family: 'Consolas', monospace; 
-            font-size: 14px; 
-            resize: vertical; 
+        #app-indikator .card {
+            background: rgba(15, 23, 42, 0.8) !important;
+            /* Darker background */
+            backdrop-filter: blur(12px);
+            padding: 30px;
+            border-top: 8px solid #d97706;
+            border-radius: 20px;
+            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.5);
+            border: 1px solid rgba(255, 255, 255, 0.1);
         }
-        
-        #app-indikator .rh-input { background: #fdfdfd; border: 2px solid #3498db; height: 180px; }
-        #app-indikator .result-output { background: #1e272e; color: #0be881; height: 350px; margin-top: 15px; border: none; white-space: pre-wrap; font-size: 15px; }
-        
-        #app-indikator .btn-group { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin: 15px 0; }
-        
-        #app-indikator .btn-process { padding: 15px; background: #3498db; color: white; border: none; border-radius: 8px; font-weight: bold; cursor: pointer; font-size: 16px; transition: 0.3s; }
-        #app-indikator .btn-process:hover { background: #2980b9; }
-        
-        #app-indikator .btn-copy { padding: 15px; background: #27ae60; color: white; border: none; border-radius: 8px; font-weight: bold; cursor: pointer; font-size: 16px; transition: 0.3s; }
-        #app-indikator .btn-copy:hover { background: #219150; }
 
+        #app-indikator h2 {
+            color: #ffffff !important;
+            /* Force white header */
+            text-align: center;
+            font-weight: 800;
+            font-size: 24px;
+            margin-bottom: 30px;
+            letter-spacing: 1px;
+            text-shadow: 0 4px 10px rgba(0, 0, 0, 0.5);
+        }
+
+        #app-indikator label {
+            color: #ffffff !important;
+            /* Force white labels */
+            font-weight: 700;
+            font-size: 13px;
+            margin-bottom: 8px;
+            display: block;
+            letter-spacing: 0.5px;
+        }
+
+        #app-indikator button {
+            padding: 12px;
+            border: none;
+            border-radius: 8px;
+            font-weight: bold;
+            color: white;
+            cursor: pointer;
+            transition: 0.3s;
+        }
+
+        #app-indikator .btn-process {
+            background: #d97706;
+            box-shadow: 0 4px 12px rgba(217, 119, 6, 0.3);
+        }
+
+        #app-indikator .btn-process:hover {
+            background: #b45309;
+        }
+
+        #app-indikator .btn-copy {
+            background: #059669;
+            box-shadow: 0 4px 12px rgba(5, 150, 105, 0.3);
+        }
+
+        /* FORCE BLACK TEXT ON WHITE BACKGROUND FOR INPUTS */
+        #app-indikator input,
+        #app-indikator textarea,
+        #app-indikator .rh-input {
+            color: #000000 !important;
+            background-color: #ffffff !important;
+            border: 2px solid #fed7aa;
+            border-radius: 10px;
+            padding: 10px;
+            font-family: monospace;
+            width: 100%;
+            box-sizing: border-box;
+        }
+
+        #app-indikator .rh-input {
+            height: 150px;
+        }
+
+        #app-indikator .result-output {
+            width: 100%;
+            height: 300px;
+            background: #1e293b;
+            color: #4ade80;
+            border-radius: 10px;
+            padding: 15px;
+            font-family: monospace;
+            border: none;
+            margin-top: 20px;
+        }
     </style>
 </head>
-<body class="flex h-screen bg-white">
 
-    <!-- 1. SIDEBAR NAVIGATION -->
-    <aside class="w-64 bg-slate-900 border-r border-slate-800 flex flex-col text-slate-300 shadow-2xl z-20">
-        <div class="p-6 border-b border-slate-800">
-            <h1 class="text-xl font-bold text-white tracking-wider">RO SDM</h1>
-            <p class="text-xs text-slate-500 uppercase mt-1">Sistem Integrasi v1.0</p>
+<body>
+
+    <!-- BACKGROUND CANVAS -->
+    <canvas id="particle-canvas"></canvas>
+
+    <!-- SIDEBAR -->
+    <aside class="sidebar">
+        <!-- Brand -->
+        <div class="brand">
+            <!-- Logo without box background -->
+            <!-- Logo without box background -->
+            <div style="width: 50px; display: flex; align-items: center; justify-content: center;">
+                <img src="logo.png" alt="Logo Polda Banten"
+                    style="width: 100%; height: auto; animation: pulse-logo 3s infinite;">
+            </div>
+            <div>
+                <h1 class="text-white font-extrabold text-lg leading-tight tracking-wide">BINKAR V1.0</h1>
+                <span class="text-amber-400 text-[10px] font-bold tracking-[0.05em] uppercase">Aplikasi Mutjab
+                    Banten</span>
+            </div>
         </div>
-        
-        <nav class="flex-1 p-4 space-y-2">
-            <a onclick="switchTab('ukp')" id="nav-ukp" class="sidebar-link active">
-                <i class="fas fa-calculator w-6"></i> Hitung UKP
-            </a>
-            <a onclick="switchTab('validator')" id="nav-validator" class="sidebar-link">
-                <i class="fas fa-check-double w-6"></i> Validator Mutasi
-            </a>
-            <a onclick="switchTab('indikator')" id="nav-indikator" class="sidebar-link">
-                <i class="fas fa-file-invoice w-6"></i> Indikator Rh
-            </a>
+
+        <!-- Navigation -->
+        <nav class="flex-1">
+            <div onclick="switchTab('ukp')" id="nav-ukp" class="nav-link active">
+                <i class="fas fa-calculator"></i>
+                <span>Hitung UKP</span>
+            </div>
+            <div onclick="switchTab('validator')" id="nav-validator" class="nav-link">
+                <i class="fas fa-check-double"></i>
+                <span>Validator Mutasi</span>
+            </div>
+            <div onclick="switchTab('indikator')" id="nav-indikator" class="nav-link">
+                <i class="fas fa-file-invoice"></i>
+                <span>Indikator Rh</span>
+            </div>
         </nav>
 
-        <div class="p-4 border-t border-slate-800 text-xs text-center text-slate-600">
-            &copy; 2026 BAGBINKAR
+        <!-- Sidebar Footer -->
+        <div class="mt-auto pt-6 border-t border-white/5">
+            <div class="flex items-center gap-3 bg-white/5 p-3 rounded-xl border border-white/5">
+                <div
+                    class="w-8 h-8 rounded-full bg-gradient-to-tr from-green-400 to-green-600 flex items-center justify-center text-white text-xs font-bold shadow-lg shadow-green-500/20">
+                    <i class="fas fa-user-shield"></i>
+                </div>
+                <div>
+                    <div class="text-xs text-slate-400 font-medium">Status System</div>
+                    <div class="text-xs text-green-400 font-bold flex items-center gap-1">
+                        <span class="w-1.5 h-1.5 rounded-full bg-green-400 animate-pulse"></span> Online
+                    </div>
+                </div>
+            </div>
         </div>
     </aside>
 
-    <!-- 2. MAIN CONTENT AREA -->
-    <main class="flex-1 relative bg-gray-50 overflow-hidden">
-        
+    <!-- MAIN CONTENT -->
+    <main class="main-content">
+
         <!-- === APP 1: UKP === -->
-        <div id="app-ukp" class="app-view active" style="padding: 20px; display: flex; flex-direction: column; align-items: center;">
-            
+        <div id="app-ukp" class="app-view active">
             <div class="app-card">
                 <div class="header">
                     <h1 style="margin:0; font-size: 24px;">HITUNG UKP POLRI</h1>
-                    <p style="margin:8px 0 0; opacity:0.9; font-size:12px;">Berdasarkan Peraturan Kepolisian No. 3 Tahun 2016</p>
+                    <p style="margin:8px 0 0; opacity:0.8; font-size:12px;">Berdasarkan Peraturan Kepolisian No. 3 Tahun
+                        2016</p>
                 </div>
-                
+
                 <div class="content">
                     <div class="form-group">
                         <label>Golongan Personel</label>
@@ -271,8 +442,9 @@
                         <select id="pangkat" onchange="updatePendidikan()"></select>
                     </div>
 
-                    <div id="form-ipda">
-                        <label>TMT Pangkat IPDA (Perhatikan Masa Dinas Surut)</label>
+                    <div id="form-ipda"
+                        style="display:none; background:#fffbeb; padding:15px; border-radius:10px; border:1px solid #fcd34d; margin-bottom:20px;">
+                        <label>TMT Pangkat IPDA</label>
                         <input type="date" id="tmt_ipda">
                     </div>
 
@@ -286,399 +458,316 @@
                         <select id="pendidikan"></select>
                     </div>
 
-                    <button onclick="hitungUKP()">Hitung Kenaikan Pangkat</button>
+                    <button onclick="hitungUKP()">HITUNG KENAIKAN PANGKAT</button>
 
-                    <div id="resultArea" class="result-area">
-                        <div style="font-size: 14px; font-weight: 600; color: #555;">ANDA AKAN NAIK PANGKAT PADA:</div>
-                        <div id="tmt_resmi" class="tmt-final"></div>
-                        <div id="detail_hitung" class="detail-badge"></div>
+                    <div id="resultArea"
+                        style="display:none; text-align:center; margin-top:20px; padding:20px; background:#f0f9ff; border-radius:15px; border:2px dashed #bae6fd;">
+                        <div style="font-size:12px; font-weight:bold; color:#0369a1;">ESTIMASI TMT:</div>
+                        <div id="tmt_resmi" style="font-size:28px; font-weight:800; color:#0284c7; margin:5px 0;"></div>
+                        <div id="detail_hitung"
+                            style="font-size:11px; color:#64748b; background:#e0f2fe; display:inline-block; padding:4px 12px; rounded:20px;">
+                        </div>
                     </div>
                 </div>
             </div>
-
-            <footer>
-                <div class="footer-main">BAGBINKAR RO SDM POLDA BANTEN</div>
-                <div class="footer-sub">Sistem Hitung UKP Polri 1.0</div>
-                <div class="copyright">
-                    &copy; 2026 • Perpol No. 3 Tahun 2016 • POLRI
-                </div>
-            </footer>
         </div>
 
         <!-- === APP 2: VALIDATOR === -->
         <div id="app-validator" class="app-view">
-            <!-- Using text-slate-800 from original body -->
-            <div class="text-slate-800">
-                <header class="bg-[#1e293b] py-6 px-8 shadow-2xl border-b-4 border-red-600">
-                    <div class="max-w-7xl mx-auto flex flex-col md:flex-row justify-between items-center gap-4">
-                        <div class="flex items-center gap-4">
-                            <div class="bg-red-600 p-3 rounded-xl shadow-lg">
-                                <i class="fas fa-fingerprint text-white text-2xl"></i>
-                            </div>
-                            <div class="text-white">
-                                <h1 class="text-xl font-extrabold tracking-tight uppercase">Sistem Validasi Personel</h1>
-                                <p class="text-xs text-slate-400 font-medium tracking-widest">BIRO SDM POLDA BANTEN</p>
-                            </div>
+            <div class="glass-card p-0 overflow-hidden">
+                <header class="p-6 flex justify-between items-center text-white">
+                    <div class="flex items-center gap-4">
+                        <div
+                            class="icon-box w-12 h-12 rounded-xl flex items-center justify-center text-white text-xl font-bold shadow-lg">
+                            <i class="fas fa-fingerprint"></i>
                         </div>
-                        <div class="flex gap-3">
-                            <button onclick="downloadTemplateCheck()" class="bg-slate-700 hover:bg-slate-600 text-white px-4 py-2 rounded-lg text-xs font-bold transition-all flex items-center gap-2 border border-slate-600">
-                                <i class="fas fa-download"></i> UNDUH TEMPLATE
-                            </button>
+                        <div>
+                            <h1 class="text-xl font-bold tracking-wide">VALIDATOR MUTASI</h1>
+                            <p class="text-xs text-slate-400 font-medium">Sistem Validasi Personel</p>
                         </div>
                     </div>
+                    <button onclick="downloadTemplateCheck()"
+                        class="bg-slate-700 hover:bg-slate-600 text-white px-4 py-2 rounded-lg text-xs font-bold transition-all border border-slate-600">
+                        <i class="fas fa-download mr-2"></i> TEMPLATE
+                    </button>
                 </header>
 
-                <main class="max-w-7xl mx-auto p-6 md:p-10 space-y-8">
-                    
-                    <div id="summary" class="hidden grid grid-cols-1 md:grid-cols-3 gap-6 animate-pulse-once">
-                        <div class="stat-card bg-white p-6 rounded-2xl shadow-sm border border-slate-200">
-                            <p class="text-xs font-bold text-slate-500 uppercase tracking-wider mb-1">Total Data Masuk</p>
-                            <h2 id="count-total" class="text-4xl font-black text-slate-900">0</h2>
-                            <div class="mt-2 text-[10px] text-blue-600 font-bold bg-blue-50 inline-block px-2 py-1 rounded">HASIL IMPORT EXCEL</div>
+                <div class="p-8 space-y-8">
+                    <!-- Summary Cards -->
+                    <div id="summary" class="hidden grid grid-cols-1 md:grid-cols-3 gap-6">
+                        <div class="stat-card bg-slate-50 p-6 rounded-2xl border border-slate-200">
+                            <p class="text-xs font-bold text-slate-500 uppercase">Total Data</p>
+                            <h2 id="count-total" class="text-3xl font-black text-slate-800">0</h2>
                         </div>
-                        <div class="stat-card bg-white p-6 rounded-2xl shadow-sm border border-slate-200 border-b-4 border-b-green-500">
-                            <p class="text-xs font-bold text-slate-500 uppercase tracking-wider mb-1">Data Unik (Bersih)</p>
-                            <h2 id="count-valid" class="text-4xl font-black text-green-600">0</h2>
-                            <div class="mt-2 text-[10px] text-green-600 font-bold bg-green-50 inline-block px-2 py-1 rounded">SIAP DIPROSES</div>
+                        <div class="stat-card bg-green-50 p-6 rounded-2xl border border-green-200">
+                            <p class="text-xs font-bold text-green-600 uppercase">Data Valid</p>
+                            <h2 id="count-valid" class="text-3xl font-black text-green-600">0</h2>
                         </div>
-                        <div class="stat-card bg-white p-6 rounded-2xl shadow-sm border border-slate-200 border-b-4 border-b-red-500">
-                            <p class="text-xs font-bold text-slate-500 uppercase tracking-wider mb-1">Data Ganda (Double)</p>
-                            <h2 id="count-double" class="text-4xl font-black text-red-600">0</h2>
-                            <div class="mt-2 text-[10px] text-red-600 font-bold bg-red-50 inline-block px-2 py-1 rounded">PERLU PERBAIKAN</div>
+                        <div class="stat-card bg-red-50 p-6 rounded-2xl border border-red-200">
+                            <p class="text-xs font-bold text-red-600 uppercase">Data Ganda</p>
+                            <h2 id="count-double" class="text-3xl font-black text-red-600">0</h2>
                         </div>
                     </div>
 
-                    <div class="bg-white p-8 rounded-3xl shadow-xl border border-slate-200 relative overflow-hidden">
-                        <div class="absolute top-0 right-0 p-4 opacity-5">
-                            <i class="fas fa-file-excel text-9xl"></i>
+                    <!-- Upload Area -->
+                    <div
+                        class="border-2 border-dashed border-slate-300 rounded-2xl p-8 text-center hover:border-amber-500 hover:bg-amber-50 transition-all cursor-pointer group relative">
+                        <input type="file" id="upload-excel" accept=".xlsx, .xls"
+                            class="absolute inset-0 w-full h-full opacity-0 cursor-pointer" />
+                        <div
+                            class="bg-white p-4 rounded-full shadow-lg inline-block mb-4 group-hover:scale-110 transition-transform">
+                            <i class="fas fa-cloud-upload-alt text-3xl text-amber-500"></i>
                         </div>
-                        
-                        <div class="max-w-xl">
-                            <h3 class="text-lg font-bold text-slate-800 mb-2">Unggah Data Personel</h3>
-                            <p class="text-sm text-slate-500 mb-6">Pastikan file Excel Anda menggunakan format Nama, NRP, dan Jabatan Baru yang sesuai template.</p>
-                            
-                            <label class="group relative flex items-center justify-between p-4 bg-slate-50 border-2 border-dashed border-slate-300 rounded-2xl hover:border-red-500 hover:bg-red-50 transition-all cursor-pointer">
-                                <div class="flex items-center gap-4">
-                                    <div class="bg-white p-3 rounded-xl shadow-sm group-hover:scale-110 transition-transform">
-                                        <i class="fas fa-upload text-red-600 text-xl"></i>
-                                    </div>
-                                    <div>
-                                        <span class="block text-sm font-bold text-slate-700">Pilih File Analisis</span>
-                                        <span class="text-[10px] text-slate-400">Excel (.xlsx atau .xls)</span>
-                                    </div>
-                                </div>
-                                <input type="file" id="upload-excel" accept=".xlsx, .xls" class="hidden"/>
-                                <span class="bg-slate-800 text-white px-4 py-2 rounded-lg text-xs font-bold">BROWSE</span>
-                            </label>
-                        </div>
+                        <h3 class="text-lg font-bold text-slate-700">Upload File Excel</h3>
+                        <p class="text-sm text-slate-500">Drag & drop atau klik untuk memilih file</p>
                     </div>
 
-                    <div class="bg-white rounded-3xl shadow-xl border border-slate-200 overflow-hidden">
-                        <div class="p-6 border-b flex flex-col md:flex-row justify-between items-center gap-4 bg-slate-50/50">
-                            <div>
-                                <h3 class="font-bold text-slate-800 uppercase tracking-widest text-sm italic">Review Hasil Pemeriksaan</h3>
-                            </div>
-                            <button onclick="exportCleanData()" id="btn-export" class="hidden bg-green-600 hover:bg-green-700 text-white px-6 py-3 rounded-xl text-sm font-bold shadow-lg shadow-green-200 flex items-center gap-2 transition-all">
-                                <i class="fas fa-check-double"></i> SIMPAN DATA BERSIH
+                    <!-- Table -->
+                    <div class="overflow-hidden rounded-xl border border-slate-200">
+                        <div class="bg-slate-50 p-4 border-b border-slate-200 flex justify-between items-center">
+                            <h3 class="font-bold text-slate-700 text-sm">HASIL VALIDASI</h3>
+                            <button onclick="exportCleanData()" id="btn-export"
+                                class="hidden bg-green-600 hover:bg-green-700 text-white px-4 py-2 rounded-lg text-xs font-bold">
+                                <i class="fas fa-file-export mr-2"></i> EXPORT BERSIH
                             </button>
                         </div>
-
-                        <div class="overflow-x-auto overflow-y-auto max-h-[500px]">
-                            <table class="w-full text-left">
-                                <thead class="sticky-table-head">
-                                    <tr class="text-[10px] uppercase tracking-widest">
-                                        <th class="p-4 text-center">No</th>
-                                        <th class="p-4">Personel & Jabatan</th>
-                                        <th class="p-4">Status & Identifikasi Ganda</th>
+                        <div class="overflow-x-auto max-h-[400px]">
+                            <table class="w-full text-left text-sm">
+                                <thead class="bg-slate-100 text-slate-500 sticky top-0">
+                                    <tr>
+                                        <th class="p-3">No</th>
+                                        <th class="p-3">Personel</th>
+                                        <th class="p-3">Status</th>
                                     </tr>
                                 </thead>
-                                <tbody id="preview-body" class="text-xs divide-y divide-slate-100">
+                                <tbody id="preview-body" class="divide-y divide-slate-100">
                                     <tr>
-                                        <td colspan="3" class="p-20 text-center text-slate-400">
-                                            <i class="fas fa-clipboard-list text-5xl mb-4 block opacity-10"></i>
-                                            <span class="font-medium">Belum ada data untuk diperiksa</span>
+                                        <td colspan="3" class="p-10 text-center text-slate-400 italic">Belum ada data
                                         </td>
                                     </tr>
                                 </tbody>
                             </table>
                         </div>
                     </div>
-                </main>
+                </div>
             </div>
         </div>
 
         <!-- === APP 3: INDIKATOR === -->
         <div id="app-indikator" class="app-view">
             <div class="card">
-                <h2>Indikator Profesionalitas</h2>
-                
-                <label>1. MASUKKAN PERTIMBANGAN (MANUAL):</label>
-                <textarea id="manualPertimbangan" rows="2" placeholder="Ketik Nota Dinas di sini..."></textarea>
+                <h2><i class="fas fa-file-invoice mr-2"></i> INDIKATOR RH</h2>
 
-                <label style="margin-top:15px;">2. PASTE TEKS RIWAYAT HIDUP (RH) DI SINI:</label>
-                <textarea id="rhInput" class="rh-input" placeholder="Tempelkan teks RH di sini..."></textarea>
-                
-                <div class="btn-group">
-                    <button class="btn-process" onclick="prosesData()">PROSES DATA</button>
-                    <button class="btn-copy" onclick="copyResult()">COPY HASIL</button>
+                <div style="display:grid; gap:20px;">
+                    <div>
+                        <label>1. CATATAN PERTIMBANGAN (MANUAL)</label>
+                        <textarea id="manualPertimbangan" rows="2" placeholder="Contoh: Ybs memiliki dedikasi tinggi..."
+                            style="width:100%; padding:10px; border:2px solid #fed7aa; border-radius:8px;"></textarea>
+                    </div>
+
+                    <div>
+                        <label>2. PASTE TEKS RH DARI SIPP</label>
+                        <textarea id="rhInput" class="rh-input"
+                            placeholder="Paste seluruh teks RH di sini..."></textarea>
+                    </div>
+
+                    <div style="display:grid; grid-template-columns: 1fr 1fr; gap:10px;">
+                        <button class="btn-process" onclick="prosesData()"><i class="fas fa-cog mr-2"></i>
+                            PROSES</button>
+                        <button class="btn-copy" onclick="copyResult()"><i class="fas fa-copy mr-2"></i> COPY
+                            HASIL</button>
+                    </div>
+
+                    <div>
+                        <label>HASIL (SIAP COPY)</label>
+                        <textarea id="outputArea" class="result-output" readonly></textarea>
+                    </div>
                 </div>
-
-                <label>HASIL SIAP COPY:</label>
-                <textarea id="outputArea" class="result-output" readonly></textarea>
             </div>
         </div>
 
+        <!-- FOOTER -->
+        <footer
+            style="margin-top: 40px; padding: 20px; text-align: center; color: rgba(255,255,255,0.4); font-size: 11px; border-top: 1px solid rgba(255,255,255,0.05);">
+            <div style="margin-bottom: 5px; font-weight: 600; letter-spacing: 1px;">
+                COPYRIGHT 2026 APLIKASI INTEGRASI MUTJAB BANTEN - TEAM IT BINKAR BANTEN
+            </div>
+            <div>
+                <a href="https://sipp.polri.go.id" target="_blank"
+                    style="color: #fbbf24; text-decoration: none; font-weight: bold; transition: 0.3s;">
+                    <i class="fas fa-globe mr-1"></i> sipp.polri.go.id
+                </a>
+            </div>
+        </footer>
+
     </main>
 
-    <!-- COMBINED SCRIPTS -->
+    <!-- JS: PARTICLES + LOGIC -->
     <script>
-        // === DASHBOARD LOGIC ===
+        // --- PARTICLE BACKGROUND ANIMATION ---
+        const canvas = document.getElementById('particle-canvas');
+        const ctx = canvas.getContext('2d');
+        let width, height;
+        let particles = [];
+
+        function resize() {
+            width = canvas.width = window.innerWidth;
+            height = canvas.height = window.innerHeight;
+        }
+        window.addEventListener('resize', resize);
+        resize();
+
+        class Particle {
+            constructor() {
+                this.x = Math.random() * width;
+                this.y = Math.random() * height;
+                this.vx = (Math.random() - 0.5) * 0.5;
+                this.vy = (Math.random() - 0.5) * 0.5;
+                this.size = Math.random() * 2 + 1;
+                this.color = `rgba(251, 191, 36, ${Math.random() * 0.5 + 0.1})`; // Amber color
+            }
+            update() {
+                this.x += this.vx;
+                this.y += this.vy;
+                if (this.x < 0) this.x = width;
+                if (this.x > width) this.x = 0;
+                if (this.y < 0) this.y = height;
+                if (this.y > height) this.y = 0;
+            }
+            draw() {
+                ctx.beginPath();
+                ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+                ctx.fillStyle = this.color;
+                ctx.fill();
+            }
+        }
+
+        for (let i = 0; i < 80; i++) particles.push(new Particle());
+
+        function animateParticles() {
+            ctx.clearRect(0, 0, width, height);
+
+            // Draw connections
+            particles.forEach((p, index) => {
+                p.update();
+                p.draw();
+
+                // Connect nearby particles
+                for (let j = index + 1; j < particles.length; j++) {
+                    const p2 = particles[j];
+                    const dx = p.x - p2.x;
+                    const dy = p.y - p2.y;
+                    const dist = Math.sqrt(dx * dx + dy * dy);
+
+                    if (dist < 150) {
+                        ctx.beginPath();
+                        ctx.strokeStyle = `rgba(251, 191, 36, ${0.1 - dist / 1500})`;
+                        ctx.lineWidth = 0.5;
+                        ctx.moveTo(p.x, p.y);
+                        ctx.lineTo(p2.x, p2.y);
+                        ctx.stroke();
+                    }
+                }
+            });
+            requestAnimationFrame(animateParticles);
+        }
+        animateParticles();
+
+
+        // --- DASHBOARD NAVIGATION ---
         function switchTab(tabId) {
             // Hide all apps
-            document.querySelectorAll('.app-view').forEach(el => {
-                el.classList.remove('active');
-                el.style.display = 'none'; // Ensure explicit hide
-                if(tabId === 'ukp' && el.id === 'app-ukp') el.style.display = 'flex'; // UKP uses flex in style attribute
-                if(tabId === 'indikator' && el.id === 'app-indikator') el.style.display = 'flex'; // Indikator uses flex in style attribute
-                if(tabId === 'validator' && el.id === 'app-validator') el.style.display = 'block';
-            });
-            
-            // Show selected app
-            // Note: The classes/styles handle 'active', but I'll reinforce for safety
-            
-            // Reset Sidebar
-            document.querySelectorAll('.sidebar-link').forEach(el => el.classList.remove('active'));
-            document.getElementById('nav-' + tabId).classList.add('active');
+            document.querySelectorAll('.app-view').forEach(el => el.classList.remove('active'));
+            document.querySelectorAll('.nav-link').forEach(el => el.classList.remove('active'));
+
+            // Show selected
+            const targetApp = document.getElementById('app-' + tabId);
+            const targetNav = document.getElementById('nav-' + tabId);
+
+            if (targetApp) targetApp.classList.add('active');
+            if (targetNav) targetNav.classList.add('active');
         }
 
-        // Initialize default tab (UKP) on load
-        window.addEventListener('load', () => {
-            switchTab('ukp');
-        });
+        // --- UKP LOGIC (Minified/Preserved) ---
+        const dataPangkat = { TAMTAMA: [{ n: "BHARADA KE BHARATU", m: 60 }, { n: "BHARATU KE BHARAKA", m: 60 }, { n: "BHARAKA KE ABRIPDA", m: 60 }, { n: "ABRIPDA KE ABRIPTU", m: 60 }, { n: "ABRIPTU KE ABRIP", m: 48 }], BINTARA: [{ n: "BRIPDA KE BRIPTU", m: 60 }, { n: "BRIPTU KE BRIGPOL", m: 60 }, { n: "BRIGPOL KE BRIPKA", m: 72 }, { n: "BRIPKA KE AIPDA", m: 72 }, { n: "AIPDA KE AIPTU", m: 60 }], PERWIRA: [{ n: "IPDA KE IPTU", reqIpda: !1, options: [{ l: "REGULER", mdp: 48, mddp: 48 }] }, { n: "IPTU KE AKP", reqIpda: !0, options: [{ l: "REGULER", mdp: 96, mddp: 48 }] }, { n: "AKP KE KOMPOL", reqIpda: !0, options: [{ l: "S2 KEDINASAN / S3 NON KEDINASAN", mdp: 156, mddp: 60 }, { l: "STIK / SESPIMMA / SPESIALIS / PIM TK. III", mdp: 156, mddp: 60 }] }, { n: "KOMPOL KE AKBP", reqIpda: !0, options: [{ l: "SESPIMMEN / S3 KEDINASAN / S2 KEDINASAN YG DISETARAKAN / PIM TK. II", mdp: 204, mddp: 48 }, { l: "S2 KEDINASAN / S3 NON KEDINASAN TERAKREDITASI MIN B", mdp: 228, mddp: 72 }, { l: "STIK / SESPIMMA / SPESIALIS / PIM TK. III", mdp: 252, mddp: 96 }, { l: "S2 NON KEDINASAN TERAKREDITASI MIN B", mdp: 288, mddp: 108 }, { l: "NON DIKBANG", mdp: 324, mddp: 120 }] }, { n: "AKBP KE KOMBES POL", reqIpda: !0, options: [{ l: "SESPIMMEN / S3 KEDINASAN / S2 KEDINASAN YG DISETARAKAN / PIM TK. II", mdp: 252, mddp: 48 }, { l: "S2 KEDINASAN / S3 NON KEDINASAN TERAKREDITASI MIN B", mdp: 324, mddp: 96 }] }, { n: "KOMBES KE DALAM GOLONGAN PATI", reqIpda: !0, options: [{ l: "LEMHANNAS / SESPIMTI / SESKO TNI / PIM TK. I / S3 KEDINASAN YG DISETARAKAN", mdp: 300, mddp: 48 }] }] };
+        const opsiBA_TA = [{ t: "REGULER", v: 0 }, { t: "S1 / S2 (POTONG 1 TAHUN)", v: 12 }, { t: "DIKJUR (POTONG 6 BULAN)", v: 6 }, { t: "S1 + DIKJUR", v: 18 }, { t: "S1 + S2 + DIKJUR", v: 30 }];
 
-        // === APP 1: UKP LOGIC ===
-        const dataPangkat = {
-            TAMTAMA: [
-                { n: "BHARADA KE BHARATU", m: 60 }, { n: "BHARATU KE BHARAKA", m: 60 },
-                { n: "BHARAKA KE ABRIPDA", m: 60 }, { n: "ABRIPDA KE ABRIPTU", m: 60 },
-                { n: "ABRIPTU KE ABRIP", m: 48 }
-            ],
-            BINTARA: [
-                { n: "BRIPDA KE BRIPTU", m: 60 }, { n: "BRIPTU KE BRIGPOL", m: 60 },
-                { n: "BRIGPOL KE BRIPKA", m: 72 }, { n: "BRIPKA KE AIPDA", m: 72 },
-                { n: "AIPDA KE AIPTU", m: 60 }
-            ],
-            PERWIRA: [
-                { n: "IPDA KE IPTU", reqIpda: false, options: [{l: "REGULER", mdp: 48, mddp: 48}] },
-                { n: "IPTU KE AKP", reqIpda: true, options: [{l: "REGULER", mdp: 96, mddp: 48}] },
-                { n: "AKP KE KOMPOL", reqIpda: true, options: [
-                    {l: "S2 KEDINASAN / S3 NON KEDINASAN", mdp: 156, mddp: 60},
-                    {l: "STIK / SESPIMMA / SPESIALIS / PIM TK. III", mdp: 156, mddp: 60}
-                ]},
-                { n: "KOMPOL KE AKBP", reqIpda: true, options: [
-                    {l: "SESPIMMEN / S3 KEDINASAN / S2 KEDINASAN YG DISETARAKAN / PIM TK. II", mdp: 204, mddp: 48},
-                    {l: "S2 KEDINASAN / S3 NON KEDINASAN TERAKREDITASI MIN B", mdp: 228, mddp: 72},
-                    {l: "STIK / SESPIMMA / SPESIALIS / PIM TK. III", mdp: 252, mddp: 96},
-                    {l: "S2 NON KEDINASAN TERAKREDITASI MIN B", mdp: 288, mddp: 108},
-                    {l: "NON DIKBANG", mdp: 324, mddp: 120}
-                ]},
-                { n: "AKBP KE KOMBES POL", reqIpda: true, options: [
-                    {l: "SESPIMMEN / S3 KEDINASAN / S2 KEDINASAN YG DISETARAKAN / PIM TK. II", mdp: 252, mddp: 48},
-                    {l: "S2 KEDINASAN / S3 NON KEDINASAN TERAKREDITASI MIN B", mdp: 324, mddp: 96}
-                ]},
-                { n: "KOMBES KE DALAM GOLONGAN PATI", reqIpda: true, options: [
-                    {l: "LEMHANNAS / SESPIMTI / SESKO TNI / PIM TK. I / S3 KEDINASAN YG DISETARAKAN", mdp: 300, mddp: 48}
-                ]}
-            ]
-        };
+        function updateMenu() { const e = document.getElementById("golongan").value, t = document.getElementById("pangkat"); t.innerHTML = "", dataPangkat[e].forEach((e, a) => { t.innerHTML += `<option value="${a}">${e.n}</option>` }), updatePendidikan() }
+        function updatePendidikan() { const e = document.getElementById("golongan").value, t = document.getElementById("pangkat").value, a = document.getElementById("pendidikan"), n = document.getElementById("form-ipda"); a.innerHTML = "", "PERWIRA" === e ? (dataPangkat.PERWIRA[t].reqIpda ? n.style.display = "block" : n.style.display = "none", dataPangkat.PERWIRA[t].options.forEach((e, t) => { a.innerHTML += `<option value="${t}">${e.l}</option>` })) : (n.style.display = "none", opsiBA_TA.forEach(e => { a.innerHTML += `<option value="${e.v}">${e.t}</option>` })) }
+        function hitungUKP() { const e = document.getElementById("golongan").value, t = document.getElementById("tmt_awal").value; if (!t) return alert("Pilih TMT Terakhir!"); let a, n, d = ""; if ("PERWIRA" === e) { const e = document.getElementById("pangkat").value, i = document.getElementById("pendidikan").value, o = dataPangkat.PERWIRA[e], l = o.options[i]; let r = new Date(t); if (r.setMonth(r.getMonth() + l.mddp), r.getDate() < new Date(t).getDate() && r.setDate(0), o.reqIpda) { const e = document.getElementById("tmt_ipda").value; if (!e) return alert("Isi TMT IPDA!"); let t = new Date(e); t.setMonth(t.getMonth() + l.mdp), t.getDate() < new Date(e).getDate() && t.setDate(0), a = new Date(Math.max(t, r)), d = `MDP: ${l.mdp / 12} Th | MDDP: ${l.mddp / 12} Th` } else a = r, d = `MDDP: ${l.mddp / 12} Tahun` } else { const n = document.getElementById("pangkat").value, i = parseInt(document.getElementById("pendidikan").value), o = dataPangkat[e][n].m - i; a = new Date(t), a.setMonth(a.getMonth() + o), a.getDate() < new Date(t).getDate() && a.setDate(0), d = `Masa Dinas: ${o} Bulan` } let i = a.getFullYear(), o = a.getMonth(); n = o <= 1 ? new Date(i, 0, 1) : o >= 2 && o <= 7 ? new Date(i, 6, 1) : new Date(i + 1, 0, 1), document.getElementById("resultArea").style.display = "block", document.getElementById("tmt_resmi").innerText = n.toLocaleDateString("id-ID", { day: "numeric", month: "long", year: "numeric" }).toUpperCase(), document.getElementById("detail_hitung").innerText = d }
 
-        const opsiBA_TA = [
-            { t: "REGULER", v: 0 },
-            { t: "S1 / S2 (POTONG 1 TAHUN)", v: 12 },
-            { t: "DIKJUR (POTONG 6 BULAN)", v: 6 },
-            { t: "S1 + DIKJUR", v: 18 },
-            { t: "S1 + S2 + DIKJUR", v: 30 }
-        ];
-
-        function updateMenu() {
-            const gol = document.getElementById('golongan').value;
-            const pSel = document.getElementById('pangkat');
-            pSel.innerHTML = "";
-            dataPangkat[gol].forEach((p, idx) => pSel.innerHTML += `<option value="${idx}">${p.n}</option>`);
-            updatePendidikan();
-        }
-
-        function updatePendidikan() {
-            const gol = document.getElementById('golongan').value;
-            const pIdx = document.getElementById('pangkat').value;
-            const pcSel = document.getElementById('pendidikan');
-            const ipdaDiv = document.getElementById('form-ipda');
-            pcSel.innerHTML = "";
-
-            if (gol === 'PERWIRA') {
-                const pData = dataPangkat.PERWIRA[pIdx];
-                ipdaDiv.style.display = pData.reqIpda ? 'block' : 'none';
-                pData.options.forEach((o, i) => pcSel.innerHTML += `<option value="${i}">${o.l}</option>`);
-            } else {
-                ipdaDiv.style.display = 'none';
-                opsiBA_TA.forEach(o => pcSel.innerHTML += `<option value="${o.v}">${o.t}</option>`);
-            }
-        }
-
-        function hitungUKP() {
-            const gol = document.getElementById('golongan').value;
-            const tmtAwal = document.getElementById('tmt_awal').value;
-            if (!tmtAwal) return alert("Silakan pilih TMT Pangkat Terakhir!");
-
-            let finalRaw;
-            let detail = "";
-
-            if (gol === 'PERWIRA') {
-                const pIdx = document.getElementById('pangkat').value;
-                const edIdx = document.getElementById('pendidikan').value;
-                const pData = dataPangkat.PERWIRA[pIdx];
-                const syarat = pData.options[edIdx];
-
-                let targetMDDP = new Date(tmtAwal);
-                targetMDDP.setMonth(targetMDDP.getMonth() + syarat.mddp);
-                if (targetMDDP.getDate() < new Date(tmtAwal).getDate()) targetMDDP.setDate(0);
-
-                if (pData.reqIpda) {
-                    const tmtIpda = document.getElementById('tmt_ipda').value;
-                    if (!tmtIpda) return alert("Wajib mengisi TMT IPDA untuk validasi MDP!");
-                    let targetMDP = new Date(tmtIpda);
-                    targetMDP.setMonth(targetMDP.getMonth() + syarat.mdp);
-                    if (targetMDP.getDate() < new Date(tmtIpda).getDate()) targetMDP.setDate(0);
-                    
-                    finalRaw = new Date(Math.max(targetMDP, targetMDDP));
-                    detail = `MDP: ${syarat.mdp/12} Thn | MDDP: ${syarat.mddp/12} Thn`;
-                } else {
-                    finalRaw = targetMDDP;
-                    detail = `MDDP: ${syarat.mddp/12} Tahun`;
-                }
-            } else {
-                const pIdx = document.getElementById('pangkat').value;
-                const potong = parseInt(document.getElementById('pendidikan').value);
-                let mddp = dataPangkat[gol][pIdx].m - potong;
-                finalRaw = new Date(tmtAwal);
-                finalRaw.setMonth(finalRaw.getMonth() + mddp);
-                if (finalRaw.getDate() < new Date(tmtAwal).getDate()) finalRaw.setDate(0);
-                detail = `Masa Dinas: ${mddp} Bulan`;
-            }
-
-            // Logika Windowing & Penarikan Feb ke Jan
-            let y = finalRaw.getFullYear(), m = finalRaw.getMonth();
-            let tmtResmi = (m <= 1) ? new Date(y, 0, 1) : (m >= 2 && m <= 7) ? new Date(y, 6, 1) : new Date(y + 1, 0, 1);
-
-            document.getElementById('resultArea').style.display = "block";
-            document.getElementById('tmt_resmi').innerText = tmtResmi.toLocaleDateString('id-ID', {day:'numeric', month:'long', year:'numeric'}).toUpperCase();
-            document.getElementById('detail_hitung').innerText = detail;
-        }
-
-        // Initialize UKP Menu
-        updateMenu();
-
-        // === APP 2: VALIDATOR LOGIC ===
-        let cleanData = [];
-
+        // --- VALIDATOR LOGIC ---
         function downloadTemplateCheck() {
-            const template = [
-                ["NAMA", "PANGKAT/ NRP/NIP", "JABATAN/KESATUAN BARU"],
-                ["BAGUS YOGA ILHAM PRIBADI, S.Tr.K.", "00051109", "PAMA POLRESTA SERANG KOTA"],
-                ["RAHMAT WIGUNA, S.H., M.H.", "89050124", "PS. PANIT 1 UNIT 3 SUBDIT 1 DITRESKRIMUM"]
-            ];
+            const template = [["NAMA", "PANGKAT/ NRP/NIP", "JABATAN/KESATUAN BARU"], ["CONTOH NAMA", "12345678", "JABATAN BARU"]];
             const ws = XLSX.utils.aoa_to_sheet(template);
             const wb = XLSX.utils.book_new();
             XLSX.utils.book_append_sheet(wb, ws, "Validator");
-            XLSX.writeFile(wb, "Template_Validator_SDM.xlsx");
+            XLSX.writeFile(wb, "Template_Validator.xlsx");
         }
-
-        document.getElementById('upload-excel').addEventListener('change', function(e) {
+        document.getElementById('upload-excel').addEventListener('change', function (e) {
             const reader = new FileReader();
-            reader.onload = function(e) {
-                const workbook = XLSX.read(new Uint8Array(e.target.result), {type: 'array'});
-                const data = XLSX.utils.sheet_to_json(workbook.Sheets[workbook.SheetNames[0]]);
-                cekValidasi(data);
+            reader.onload = function (e) {
+                const wb = XLSX.read(new Uint8Array(e.target.result), { type: 'array' });
+                const data = XLSX.utils.sheet_to_json(wb.Sheets[wb.SheetNames[0]]);
+                const tbody = document.getElementById('preview-body');
+                tbody.innerHTML = "";
+                let nrpMap = {}, jabMap = {}, dbl = 0, clean = [];
+
+                data.forEach((row, i) => {
+                    const no = i + 1, nrp = (row["PANGKAT/ NRP/NIP"] || "").toString().trim(), nama = (row["NAMA"] || "").toUpperCase(), jab = (row["JABATAN/KESATUAN BARU"] || "").toUpperCase();
+
+                    // Normalize: Remove "PS." prefix
+                    const normJab = jab.replace(/^PS\.\s*/, "").trim();
+
+                    let errN = "", errJ = "", isD = false;
+
+                    if (nrp && nrpMap[nrp]) {
+                        isD = true;
+                        errN = `<div class='text-[10px] text-red-600 font-bold mt-1 bg-red-100 p-1 rounded'>NRP SAMA DENGAN NO. URUT ${nrpMap[nrp].no} A.N ${nrpMap[nrp].nama}</div>`;
+                    }
+
+                    if (normJab && jabMap[normJab]) {
+                        isD = true;
+                        errJ = `<div class='text-[10px] text-amber-700 font-bold mt-1 bg-amber-100 p-1 rounded'>JABATAN SAMA DENGAN NO. URUT ${jabMap[normJab].no} A.N ${jabMap[normJab].nama}</div>`;
+                    }
+
+                    if (!nrpMap[nrp]) nrpMap[nrp] = { no, nama };
+                    if (!jabMap[normJab]) jabMap[normJab] = { no, nama };
+
+                    if (isD) dbl++; else clean.push(row);
+
+                    tbody.innerHTML += `<tr class="${isD ? 'bg-red-50' : 'hover:bg-slate-50'} border-b border-slate-100 transition-colors">
+                        <td class="p-3 font-bold text-slate-400 text-center">${no}</td>
+                        <td class="p-3">
+                            <div class="font-bold text-slate-800 text-xs">${nama}</div>
+                            <div class="text-[10px] text-slate-500 bg-slate-100 px-1 rounded inline-block font-mono border border-slate-200">${nrp}</div>
+                            <div class="mt-1 text-[10px] italic text-slate-600">${jab}</div>
+                        </td>
+                        <td class="p-3 align-top">
+                            ${!isD ? '<span class="text-green-700 font-bold text-[10px] bg-green-100 px-2 py-1 rounded border border-green-200 shadow-sm"><i class="fas fa-check-circle mr-1"></i> AMAN</span>' : errN + errJ}
+                        </td>
+                    </tr>`;
+                });
+                document.getElementById('summary').classList.remove('hidden');
+                document.getElementById('count-total').innerText = data.length;
+                document.getElementById('count-valid').innerText = data.length - dbl;
+                document.getElementById('count-double').innerText = dbl;
+                if (clean.length > 0) {
+                    document.getElementById('btn-export').classList.remove('hidden');
+                    window.cleanData = clean;
+                }
             };
             reader.readAsArrayBuffer(e.target.files[0]);
         });
-
-        function cekValidasi(data) {
-            const tbody = document.getElementById('preview-body');
-            tbody.innerHTML = "";
-            cleanData = [];
-            
-            let nrpTracker = {}; 
-            let jabatanTracker = {}; 
-            let doubleCount = 0;
-
-            data.forEach((row, index) => {
-                const no = index + 1;
-                const nrp = (row["PANGKAT/ NRP/NIP"] || "").toString().trim();
-                const nama = (row["NAMA"] || "").toUpperCase();
-                const jabBaru = (row["JABATAN/KESATUAN BARU"] || "").toUpperCase();
-                
-                let isDouble = false;
-                let errorNRP = "";
-                let errorJab = "";
-
-                if (nrp !== "" && nrpTracker[nrp]) {
-                    isDouble = true;
-                    errorNRP = `<div class='mt-1 bg-red-600 text-white p-2 rounded-lg text-[10px] shadow-sm'>
-                                    <i class='fas fa-exclamation-triangle'></i> NRP SAMA DENGAN: <b>No. ${nrpTracker[nrp].no} - ${nrpTracker[nrp].nama}</b>
-                                </div>`;
-                }
-
-                if (jabBaru !== "" && jabatanTracker[jabBaru]) {
-                    isDouble = true;
-                    errorJab = `<div class='mt-1 bg-orange-600 text-white p-2 rounded-lg text-[10px] shadow-sm'>
-                                    <i class='fas fa-user-friends'></i> JABATAN SUDAH DIISI: <b>No. ${jabatanTracker[jabBaru].no} - ${jabatanTracker[jabBaru].nama}</b>
-                                </div>`;
-                }
-
-                if (!nrpTracker[nrp]) nrpTracker[nrp] = { no, nama };
-                if (!jabatanTracker[jabBaru]) jabatanTracker[jabBaru] = { no, nama };
-
-                if (!isDouble) cleanData.push(row); else doubleCount++;
-
-                const tr = document.createElement('tr');
-                tr.className = isDouble ? 'row-error' : 'row-valid hover:bg-slate-50 transition-colors';
-                
-                tr.innerHTML = `
-                    <td class="p-5 text-center font-bold text-slate-400">${no}</td>
-                    <td class="p-5">
-                        <div class="font-bold text-slate-900 text-sm mb-1">${nama}</div>
-                        <div class="flex items-center gap-2 text-[10px] text-slate-500 mb-2">
-                            <span class="bg-slate-200 px-2 py-0.5 rounded font-bold">${nrp}</span>
-                        </div>
-                        <div class="text-[11px] bg-slate-100 p-2 rounded border border-slate-200 text-slate-700 italic">
-                            ${jabBaru}
-                        </div>
-                    </td>
-                    <td class="p-5">
-                        ${!isDouble ? '<span class="text-green-600 font-bold bg-green-50 px-3 py-1 rounded-full"><i class="fas fa-check-circle"></i> DATA AMAN</span>' : ''}
-                        ${errorNRP}
-                        ${errorJab}
-                    </td>
-                `;
-                tbody.appendChild(tr);
-            });
-
-            document.getElementById('summary').classList.remove('hidden');
-            document.getElementById('count-total').innerText = data.length;
-            document.getElementById('count-valid').innerText = data.length - doubleCount;
-            document.getElementById('count-double').innerText = doubleCount;
-            document.getElementById('btn-export').classList.remove('hidden');
-        }
-
         function exportCleanData() {
-            const ws = XLSX.utils.json_to_sheet(cleanData);
+            const ws = XLSX.utils.json_to_sheet(window.cleanData);
             const wb = XLSX.utils.book_new();
-            XLSX.utils.book_append_sheet(wb, ws, "ValidData");
-            XLSX.writeFile(wb, "Data_Mutasi_SDM_Final.xlsx");
+            XLSX.utils.book_append_sheet(wb, ws, "Valid");
+            XLSX.writeFile(wb, "Data_Valid.xlsx");
         }
 
-        // === APP 3: INDIKATOR LOGIC ===
+        // --- INDIKATOR LOGIC (Preserved) ---
+        // --- INDIKATOR LOGIC (Restored from User Source) ---
         function prosesData() {
             const raw = document.getElementById('rhInput').value.toUpperCase();
             if (!raw) return alert("Tempelkan teks RH terlebih dahulu!");
@@ -698,7 +787,7 @@
             const sec1 = raw.split("II. PENDIDIKAN UMUM")[0];
             const policeEdu = [];
             const polKeywords = ["AKPOL", "SIPSS", "DIKTUKPA", "DIKTUKBA", "AKABRI", "BRIGADIR", "SEBA", "SIP ", "STIK", "PTIK", "SESPIM", "SIP SUS", "SESPIMMEN", "SESPIMMA"];
-            
+
             for (let k of polKeywords) {
                 const regex = new RegExp(k + ".*?(\\d{4})", "g");
                 let m;
@@ -710,14 +799,14 @@
             // --- b. DIKPOL (Paling Lama) ---
             let dikpol = "-";
             if (policeEdu.length > 0) {
-                const tertua = [...policeEdu].sort((a,b) => a.tahun - b.tahun)[0];
+                const tertua = [...policeEdu].sort((a, b) => a.tahun - b.tahun)[0];
                 dikpol = tertua.nama + " " + tertua.tahun;
             }
 
             // --- c. DIKBANG (Paling Baru) ---
             let dikbang = "-";
             if (policeEdu.length > 1) {
-                const terbaru = [...policeEdu].sort((a,b) => b.tahun - a.tahun)[0];
+                const terbaru = [...policeEdu].sort((a, b) => b.tahun - a.tahun)[0];
                 dikbang = terbaru.nama + " " + terbaru.tahun;
             }
 
@@ -734,20 +823,20 @@
                 }
             }
             if (foundJur.length > 0) {
-                const jurBaru = foundJur.sort((a,b) => b.t - a.t)[0];
+                const jurBaru = foundJur.sort((a, b) => b.t - a.t)[0];
                 dikjur = jurBaru.n + " " + jurBaru.t;
             }
 
             // --- e. PENGALAMAN TUGAS ---
             const ivPart = (raw.split("IV. RIWAYAT JABATAN")[1] || "").split("V.")[0];
             const scores = { "SDM": 0, "LANTAS": 0, "RESKRIM": 0, "HUKUM": 0, "SABHARA": 0 };
-            if (ivPart.match(/SDM|BINKAR|MUTJAB|DALPERS|DIAPERS|SELEK|PSIKOLOG/g)) 
+            if (ivPart.match(/SDM|BINKAR|MUTJAB|DALPERS|DIAPERS|SELEK|PSIKOLOG/g))
                 scores["SDM"] = (ivPart.match(/SDM|BINKAR|MUTJAB|DALPERS|DIAPERS|SELEK|PSIKOLOG/g) || []).length;
-            if (ivPart.match(/LANTAS|REGIDENT|BPKB|STNK/g)) 
+            if (ivPart.match(/LANTAS|REGIDENT|BPKB|STNK/g))
                 scores["LANTAS"] = (ivPart.match(/LANTAS|REGIDENT|BPKB|STNK/g) || []).length;
-            if (ivPart.match(/HUKUM|KUM|LUHKUM/g)) 
+            if (ivPart.match(/HUKUM|KUM|LUHKUM/g))
                 scores["HUKUM"] = (ivPart.match(/HUKUM|KUM|LUHKUM/g) || []).length;
-            if (ivPart.match(/RESKRIM|IDIK|RESERSE/g)) 
+            if (ivPart.match(/RESKRIM|IDIK|RESERSE/g))
                 scores["RESKRIM"] = (ivPart.match(/RESKRIM|IDIK|RESERSE/g) || []).length;
 
             let tugas = Object.keys(scores).reduce((a, b) => scores[a] > scores[b] ? a : b);
@@ -779,6 +868,12 @@ ${pertimbangan}`;
             document.execCommand('copy');
             alert("Berhasil dicopy!");
         }
+
+        // Init
+        window.addEventListener('load', () => switchTab('ukp'));
+        updateMenu();
+
     </script>
 </body>
+
 </html>
