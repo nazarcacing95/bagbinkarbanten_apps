@@ -1,0 +1,439 @@
+<!DOCTYPE html>
+<html lang="id">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sistem Terintegrasi Biro SDM Polda Banten</title>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600;700&display=swap');
+
+        :root {
+            --polri-blue: #002D5A;
+            --polri-gold: #FFD700;
+            --polri-red: #e63946;
+            --glass-bg: rgba(255, 255, 255, 0.85);
+            --glass-border: rgba(255, 255, 255, 0.3);
+            --sidebar-width: 280px;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: linear-gradient(135deg, #0f2027, #203a43, #2c5364);
+            /* Fallback/Base */
+            display: flex;
+            height: 100vh;
+            overflow: hidden;
+            position: relative;
+        }
+
+        /* Particle Canvas */
+        #particles-js {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            z-index: 0;
+            top: 0;
+            left: 0;
+        }
+
+        /* Sidebar Styling */
+        .sidebar {
+            width: var(--sidebar-width);
+            background: rgba(0, 45, 90, 0.9);
+            backdrop-filter: blur(15px);
+            -webkit-backdrop-filter: blur(15px);
+            color: white;
+            display: flex;
+            flex-direction: column;
+            box-shadow: 4px 0 25px rgba(0, 0, 0, 0.3);
+            z-index: 20;
+            border-right: 1px solid rgba(255, 255, 255, 0.1);
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        .sidebar-header {
+            padding: 35px 20px;
+            text-align: center;
+            border-bottom: 1px solid rgba(255, 215, 0, 0.3);
+            background: linear-gradient(180deg, rgba(255, 255, 255, 0.05) 0%, rgba(255, 255, 255, 0) 100%);
+        }
+
+        .logo-area {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 15px;
+            margin-bottom: 15px;
+            filter: drop-shadow(0 0 10px rgba(255, 215, 0, 0.5));
+        }
+
+        .logo-icon {
+            font-size: 38px;
+            color: var(--polri-gold);
+        }
+
+        .sidebar-title {
+            font-size: 20px;
+            font-weight: 800;
+            letter-spacing: 1.5px;
+            color: white;
+            line-height: 1.2;
+            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+        }
+
+        .sidebar-subtitle {
+            font-size: 10px;
+            color: var(--polri-gold);
+            margin-top: 5px;
+            font-weight: 600;
+            letter-spacing: 3px;
+            text-transform: uppercase;
+        }
+
+        .nav-menu {
+            flex: 1;
+            padding: 25px 15px;
+            overflow-y: auto;
+        }
+
+        .nav-link {
+            display: flex;
+            align-items: center;
+            padding: 16px 20px;
+            color: rgba(255, 255, 255, 0.7);
+            text-decoration: none;
+            transition: all 0.3s ease;
+            font-size: 14px;
+            border-radius: 12px;
+            margin-bottom: 8px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .nav-link:hover {
+            background: rgba(255, 255, 255, 0.1);
+            color: white;
+            transform: translateX(5px);
+        }
+
+        .nav-link.active {
+            background: linear-gradient(90deg, rgba(255, 215, 0, 0.2), rgba(255, 215, 0, 0.05));
+            color: var(--polri-gold);
+            border: 1px solid rgba(255, 215, 0, 0.3);
+            font-weight: 600;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+        }
+
+        .nav-link i {
+            width: 30px;
+            font-size: 18px;
+            margin-right: 10px;
+        }
+
+        .sidebar-footer {
+            padding: 25px;
+            background: rgba(0, 0, 0, 0.3);
+            font-size: 11px;
+            text-align: center;
+            color: rgba(255, 255, 255, 0.5);
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        /* Main Content Styling */
+        .main-content {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            position: relative;
+            z-index: 10;
+            background: transparent;
+        }
+
+        .top-bar {
+            height: 70px;
+            background: rgba(255, 255, 255, 0.1);
+            /* Transparent glass */
+            backdrop-filter: blur(10px);
+            -webkit-backdrop-filter: blur(10px);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 30px;
+            color: white;
+        }
+
+        .app-title {
+            font-size: 18px;
+            font-weight: 700;
+            color: white;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
+        }
+
+        .user-profile {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            font-size: 14px;
+            color: white;
+            padding: 6px 12px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 30px;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .avatar {
+            width: 32px;
+            height: 32px;
+            background: linear-gradient(135deg, var(--polri-gold), #f39c12);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: bold;
+            font-size: 14px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+        }
+
+        /* Iframe Container */
+        .iframe-container {
+            flex: 1;
+            padding: 20px;
+            overflow: hidden;
+            position: relative;
+        }
+
+        iframe {
+            width: 100%;
+            height: 100%;
+            border: none;
+            border-radius: 20px;
+            /* background: rgba(255, 255, 255, 0.4);  Glass container base */
+            /* backdrop-filter: blur(5px); */
+            background: transparent;
+            /* Allow iframe content to handle transparency */
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .sidebar {
+                position: absolute;
+                left: -100%;
+                height: 100%;
+                width: 280px;
+            }
+
+            .sidebar.active {
+                left: 0;
+            }
+
+            .main-content {
+                width: 100%;
+            }
+
+            .menu-toggle {
+                display: block !important;
+                font-size: 24px;
+                color: white;
+                cursor: pointer;
+            }
+
+            .app-title span {
+                font-size: 16px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- Particle Background Canvas -->
+    <canvas id="particles-js"></canvas>
+
+    <!-- Sidebar -->
+    <aside class="sidebar" id="sidebar">
+        <div class="sidebar-header">
+            <div class="logo-area">
+                <i class="fas fa-shield-alt logo-icon"></i>
+            </div>
+            <div class="sidebar-title">BIRO SDM</div>
+            <div class="sidebar-subtitle">POLDA BANTEN</div>
+        </div>
+
+        <ul class="nav-menu">
+            <li class="nav-item">
+                <a href="#" class="nav-link active" onclick="loadApp(this, 'dashboard.html', 'Sistem Hitung UKP Polri')">
+                    <i class="fas fa-calculator"></i>
+                    <span>Hitung UKP</span>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a href="#" class="nav-link" onclick="loadApp(this, 'DEVELOPMENT.HTML', 'Validator Mutasi & Data')">
+                    <i class="fas fa-file-contract"></i>
+                    <span>Validator Mutasi</span>
+                </a>
+            </li>
+            <li class="nav-item">
+                <a href="#" class="nav-link"
+                    onclick="loadApp(this, 'INDIKATOR.HTML', 'Generator Indikator Profesionalitas')">
+                    <i class="fas fa-chart-line"></i>
+                    <span>Indikator Profesionalitas</span>
+                </a>
+            </li>
+        </ul>
+
+        <div class="sidebar-footer">
+            &copy; 2026 Bagbinkar Ro SDM<br>Polda Banten
+        </div>
+    </aside>
+
+    <!-- Main Content -->
+    <main class="main-content">
+        <div class="top-bar">
+            <div class="app-title">
+                <i class="fas fa-bars menu-toggle" style="display: none;" id="menuToggle"></i>
+                <span id="currentAppTitle">Sistem Hitung UKP Polri</span>
+            </div>
+            <div class="user-profile">
+                <span>Administrator</span>
+                <div class="avatar">A</div>
+            </div>
+        </div>
+
+        <div class="iframe-container">
+            <iframe id="appFrame" src="index.html" allowtransparency="true"></iframe>
+        </div>
+    </main>
+
+    <script>
+        // --- CUSTOM PARTICLE SCRIPT ---
+        const canvas = document.getElementById('particles-js');
+        const ctx = canvas.getContext('2d');
+        let particlesArray;
+
+        canvas.width = window.innerWidth;
+        canvas.height = window.innerHeight;
+
+        class Particle {
+            constructor() {
+                this.x = Math.random() * canvas.width;
+                this.y = Math.random() * canvas.height;
+                this.size = Math.random() * 3 + 1;
+                this.speedX = Math.random() * 1 - 0.5;
+                this.speedY = Math.random() * 1 - 0.5;
+                this.color = 'rgba(255, 255, 255, ' + (Math.random() * 0.5 + 0.1) + ')';
+            }
+            update() {
+                this.x += this.speedX;
+                this.y += this.speedY;
+                if (this.x > canvas.width || this.x < 0) this.speedX = -this.speedX;
+                if (this.y > canvas.height || this.y < 0) this.speedY = -this.speedY;
+            }
+            draw() {
+                ctx.fillStyle = this.color;
+                ctx.beginPath();
+                ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+                ctx.fill();
+            }
+        }
+
+        function initParticles() {
+            particlesArray = [];
+            for (let i = 0; i < 100; i++) {
+                particlesArray.push(new Particle());
+            }
+        }
+
+        function animateParticles() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            for (let i = 0; i < particlesArray.length; i++) {
+                particlesArray[i].update();
+                particlesArray[i].draw();
+
+                // Connect particles
+                for (let j = i; j < particlesArray.length; j++) {
+                    const dx = particlesArray[i].x - particlesArray[j].x;
+                    const dy = particlesArray[i].y - particlesArray[j].y;
+                    const distance = Math.sqrt(dx * dx + dy * dy);
+                    if (distance < 100) {
+                        ctx.beginPath();
+                        ctx.strokeStyle = `rgba(255, 255, 255, ${0.1 - distance / 1000})`;
+                        ctx.lineWidth = 1;
+                        ctx.moveTo(particlesArray[i].x, particlesArray[i].y);
+                        ctx.lineTo(particlesArray[j].x, particlesArray[j].y);
+                        ctx.stroke();
+                    }
+                }
+            }
+            requestAnimationFrame(animateParticles);
+        }
+
+        window.addEventListener('resize', () => {
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+            initParticles();
+        });
+
+        initParticles();
+        animateParticles();
+
+        // --- DASHBOARD NAVIGATION ---
+        function loadApp(element, url, title) {
+            // Update active state
+            document.querySelectorAll('.nav-link').forEach(link => link.classList.remove('active'));
+            element.classList.add('active');
+
+            // Update iframe and title with a small fade effect
+            const iframe = document.getElementById('appFrame');
+            const titleEl = document.getElementById('currentAppTitle');
+
+            iframe.style.opacity = '0';
+
+            // Close sidebar on mobile after selection
+            if (window.innerWidth <= 768) {
+                document.getElementById('sidebar').classList.remove('active');
+            }
+
+            setTimeout(() => {
+                iframe.src = url;
+                titleEl.textContent = title;
+                iframe.onload = () => {
+                    iframe.style.opacity = '1';
+                };
+            }, 300);
+        }
+
+        // Add CSS transition for fade effect
+        document.getElementById('appFrame').style.transition = 'opacity 0.3s ease';
+
+        // Responsive menu handling
+        const menuToggle = document.getElementById('menuToggle');
+        const sidebar = document.getElementById('sidebar');
+
+        menuToggle.addEventListener('click', () => {
+            sidebar.classList.toggle('active');
+        });
+
+        // Close sidebar when clicking outside on mobile
+        document.addEventListener('click', (e) => {
+            if (window.innerWidth <= 768 && !sidebar.contains(e.target) && !menuToggle.contains(e.target) && sidebar.classList.contains('active')) {
+                sidebar.classList.remove('active');
+            }
+        });
+    </script>
+</body>
+
+</html>
